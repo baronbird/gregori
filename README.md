@@ -1,2 +1,2 @@
 # gregori
-tiny little platformer in C++ w/ SDL
+platformer about a tiny gardener in C++ w/ SDL
