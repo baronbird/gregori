@@ -7,6 +7,12 @@
 //      1-11-2017 ::  started
 //      1-12-2017 ::  improved collision
 //                    added directional "place" functions
+//      2-16-2017 ::  added struct "plant" to help with different plant types
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// gregori ///////////////////////////////////////////////////////////////////////////////////
 
 class Gregori
 {
@@ -31,6 +37,7 @@ class Gregori
     SDL_Rect climbRect;
 };
 
+// always starts in the same location on the title screen
 Gregori::Gregori()
 {
   renderRect.x = renderRect.y = 0; renderRect.w = renderRect.h = 35;
@@ -41,6 +48,7 @@ Gregori::Gregori()
 
 Gregori::~Gregori() {}
 
+// keep head and legs in line with the actual sprite
 void Gregori::updatePosition()
 {
   head.x = renderRect.x + 5; head.y = renderRect.y;
@@ -48,6 +56,12 @@ void Gregori::updatePosition()
   climbRect.x = renderRect.x + 5; climbRect.y = renderRect.y + 20;
 }
 
+// returns an integer ::
+//                    ::  0 if there is no collision
+//                    ::  1 if colliding from the right
+//                    ::  2 if colliding from the top (with the legs)
+//                    ::  3 if colliding from the left
+//                    ::  4 if colliding from below
 int Gregori::isCollidingWith(SDL_Rect &theRect)
 {
   int colliding = 0;
@@ -56,7 +70,7 @@ int Gregori::isCollidingWith(SDL_Rect &theRect)
   if( SDL_IntersectRect(&head,&theRect,&headResult) ) 
   {
     colliding = 1;
-    if( headResult.x == theRect.x && head.y <theRect.y + theRect.h - 6)
+    if( headResult.x == theRect.x && head.y < theRect.y + theRect.h - 6)
       colliding = 3;
     else if(head.y < theRect.y + theRect.h - 6)
       colliding = 4;;
@@ -66,6 +80,7 @@ int Gregori::isCollidingWith(SDL_Rect &theRect)
   return colliding;
 }
 
+// similar to isCollidingWith() but with different rules and Rects
 bool Gregori::canClimbOn(SDL_Rect &theIvy)
 {
   bool climbable = false;
@@ -80,8 +95,7 @@ bool Gregori::canClimbOn(SDL_Rect &theIvy)
   return climbable;
 }
   
-
-
+// update functions
 void Gregori::moveHorizontally(int deltaX)
 {
   renderRect.x += deltaX;
@@ -94,6 +108,7 @@ void Gregori::moveVertically(int deltaY)
   updatePosition();
 }
 
+// directional placement functions, for interactions with platforms, etc.
 void Gregori::placeOn(SDL_Rect &thePlatform)
 {
   renderRect.y = thePlatform.y - renderRect.h + 1;
@@ -118,13 +133,26 @@ void Gregori::placeRightOf(SDL_Rect &thePlatform)
   updatePosition();
 }
 
+// place Gregori at given location, for setting up new levels
 void Gregori::placeAt(int x,int y)
 {
   renderRect.x = x; renderRect.y = y;
   updatePosition();
 }
 
+// for rendering purposes, this has to be accessible
 SDL_Rect Gregori::getRenderRect()
 {
   return renderRect;
 }
+
+
+
+// plant /////////////////////////////////////////////////////////////////////////////////////
+
+// src and dst for rendering, type for seeds
+struct plant {
+  SDL_Rect dst, src;
+  char type;
+  int numseeds = 0;
+};

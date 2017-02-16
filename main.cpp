@@ -10,6 +10,9 @@
 //      1-12-2017 ::  added title
 //                    added climbing
 //                    improved collision
+//      2-16-2017 ::  added seed interactions
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
@@ -46,10 +49,23 @@ int main(int argc, char* argv[])
     SDL_Rect gregSrc{0,0,7,7}, gregDst;
     int frame{0}, deltaX{0}, deltaY{0}, jumps{2};
     bool onPlatform{false}, inTheIvy{false}, jumping{false}, animation_switch{false};
-    bool onTheIvy{false}, climbing{false};
+    bool onTheIvy{false}, climbing{false}, interacting{false};
 
     // plant variables
-    SDL_Rect plantDst{575,351,35,45}, plantSrc{98,0,7,9};
+    plant titlePlant;
+    titlePlant.dst = {575,351,35,45};
+    titlePlant.src = {98,0,7,9};
+    titlePlant.type = 'g';
+    titlePlant.numseeds = 3;
+
+    // seed inventory
+    plant seeds[8];
+    for(int i = 0; i < 8; i++)
+    {
+      seeds[i].dst = {15 + 25 * i,435,20,25};
+      seeds[i].src = {0,0,0,0};
+      seeds[i].type = 0;
+    }
 
     // platform variables
     SDL_Rect platformDst[10], platformSrc{0,7,16,3};
@@ -171,11 +187,40 @@ int main(int argc, char* argv[])
       }
       if(currentKeyStates[SDL_SCANCODE_X])
       {
-        if(greg.isCollidingWith(plantDst))
+        if(greg.isCollidingWith(titlePlant.dst))
         {
-          printf("you did it\n");
-          quit = true;
+          if(titlePlant.numseeds > 0)
+          {
+            if(!interacting)
+            {
+              for(int i = 0; i < 8; i++)
+              {
+                if(seeds[i].type == 0)
+                {
+                  seeds[i].type = titlePlant.type;
+                  titlePlant.numseeds--;
+                  break;
+                }
+              }
+            }
+          }
         }
+        else
+        {
+          if(!interacting)
+          {
+            if(seeds[0].type != 0)
+            {
+              printf("planted seed!\n");
+              for(int i = 0; i < 7; i++)
+              {
+                seeds[i].type = seeds[i+1].type;
+              }
+              seeds[7].type = 0;
+            }
+          }
+        }
+        interacting = true;
       }
 
       if(!inTheIvy && !onPlatform) noControls = false;
@@ -295,6 +340,18 @@ int main(int argc, char* argv[])
 
       gregSrc.x = frame * 7;
 
+      for(int i = 0; i < 8; i++)
+      {
+        if(seeds[i].type == 'g')
+        {
+          seeds[i].src = {105,0,4,5};
+        }
+        else if(seeds[i].type == 0)
+        {
+          seeds[i].src = {0,0,0,0};
+        }
+      }
+
       // catch edges
       gregDst = greg.getRenderRect();
       if(gregDst.x >= 610)
@@ -314,13 +371,17 @@ int main(int argc, char* argv[])
 
       // render to screen
       SDL_RenderClear(gRenderer);
-      if(greg.isCollidingWith(plantDst) )
+      if(greg.isCollidingWith(titlePlant.dst) && titlePlant.numseeds > 0)
         SDL_RenderCopy(gRenderer,spriteSheet,&enterSrc,&enterDst);
       SDL_RenderCopy(gRenderer,spriteSheet,&titleSrc,&titleDst);
-      SDL_RenderCopy(gRenderer,spriteSheet,&plantSrc,&plantDst);
+      SDL_RenderCopy(gRenderer,spriteSheet,&titlePlant.src,&titlePlant.dst);
       for(int i = 0; i < 10; i++)
       {
         SDL_RenderCopy(gRenderer,spriteSheet,&platformSrc,&platformDst[i]);
+      }
+      for(int i = 0; i < 8; i++)
+      {
+        SDL_RenderCopy(gRenderer,spriteSheet,&seeds[i].src,&seeds[i].dst);
       }
       SDL_RenderCopy(gRenderer,spriteSheet,&gregSrc,&gregDst);
       SDL_RenderPresent(gRenderer);
@@ -330,6 +391,8 @@ int main(int argc, char* argv[])
       if(inTheIvy) deltaY = 0;
       if(!currentKeyStates[SDL_SCANCODE_Z])
         jumping = false;
+      if(!currentKeyStates[SDL_SCANCODE_X])
+        interacting = false;
       if(animation == 0)
       {
         if(animation_switch) climbing = !climbing;
