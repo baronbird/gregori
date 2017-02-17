@@ -20,6 +20,7 @@
 #include<unistd.h>
 #include<string>
 #include<cmath>
+#include<vector>
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 #define ANIMAX 4
@@ -57,6 +58,8 @@ int main(int argc, char* argv[])
     titlePlant.src = {98,0,7,9};
     titlePlant.type = 'g';
     titlePlant.numseeds = 3;
+
+    std::vector<plant> newplants;
 
     // seed inventory
     plant seeds[8];
@@ -170,9 +173,13 @@ int main(int argc, char* argv[])
           inTheIvy = false;
           if(!currentKeyStates[SDL_SCANCODE_DOWN])
           {
-            greg.moveVertically(-1);
-            deltaY = - 5;
-            animation = 2;
+            if(!jumping && jumps > 0)
+            {
+              greg.moveVertically(-1);
+              deltaY = - 5;
+              animation = 2;
+              jumps--;
+            }
           }
         }
         else if(!jumping && jumps > 0)
@@ -209,9 +216,17 @@ int main(int argc, char* argv[])
         {
           if(!interacting)
           {
-            if(seeds[0].type != 0)
+            if(seeds[0].type != 0 && onPlatform)
             {
-              printf("planted seed!\n");
+              gregDst = greg.getRenderRect();
+              plant temp;
+              if(seeds[0].type == 'g')
+              {
+                temp.dst = {gregDst.x,gregDst.y - 165,25,200};
+                temp.src = {64,10,5,40};
+                temp.type = 'g';
+              }
+              newplants.push_back(temp);
               for(int i = 0; i < 7; i++)
               {
                 seeds[i].type = seeds[i+1].type;
@@ -272,6 +287,13 @@ int main(int argc, char* argv[])
       for(int i = 0; i < 7; i++)
       {
         if(greg.canClimbOn(ivyRect[i]) )
+        {
+          onTheIvy = true;
+        }
+      }
+      for(int i = 0; i < newplants.size(); i++)
+      {
+        if(greg.canClimbOn(newplants[i].dst) )
         {
           onTheIvy = true;
         }
@@ -351,6 +373,17 @@ int main(int argc, char* argv[])
           seeds[i].src = {0,0,0,0};
         }
       }
+      for(int i = 0; i < newplants.size(); i++)
+      {
+        if(newplants[i].type == 'g' && newplants[i].src.x < 69)
+        {
+          newplants[i].src.x += 5;
+        }
+        else if(newplants[i].type == 'g' && newplants[i].src.x < 84)
+        {
+          if(animation_switch) newplants[i].src.x += 5;
+        }
+      }
 
       // catch edges
       gregDst = greg.getRenderRect();
@@ -371,10 +404,14 @@ int main(int argc, char* argv[])
 
       // render to screen
       SDL_RenderClear(gRenderer);
-      if(greg.isCollidingWith(titlePlant.dst) && titlePlant.numseeds > 0)
-        SDL_RenderCopy(gRenderer,spriteSheet,&enterSrc,&enterDst);
       SDL_RenderCopy(gRenderer,spriteSheet,&titleSrc,&titleDst);
       SDL_RenderCopy(gRenderer,spriteSheet,&titlePlant.src,&titlePlant.dst);
+      for(int i = 0; i < newplants.size(); i++)
+      {
+        SDL_RenderCopy(gRenderer,spriteSheet,&newplants[i].src,&newplants[i].dst);
+      }
+      if(greg.isCollidingWith(titlePlant.dst) && titlePlant.numseeds > 0)
+        SDL_RenderCopy(gRenderer,spriteSheet,&enterSrc,&enterDst);
       for(int i = 0; i < 10; i++)
       {
         SDL_RenderCopy(gRenderer,spriteSheet,&platformSrc,&platformDst[i]);
@@ -388,7 +425,12 @@ int main(int argc, char* argv[])
 
       //status updates
       deltaX = 0;
-      if(inTheIvy) deltaY = 0;
+      if(onPlatform) inTheIvy = false;
+      if(inTheIvy)
+      {
+        deltaY = 0;
+        jumps = 1;
+      }
       if(!currentKeyStates[SDL_SCANCODE_Z])
         jumping = false;
       if(!currentKeyStates[SDL_SCANCODE_X])
