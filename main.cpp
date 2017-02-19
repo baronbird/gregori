@@ -11,6 +11,7 @@
 //                    added climbing
 //                    improved collision
 //      2-16-2017 ::  added seed interactions
+//      2-17-2017 ::  fixed jumping on vines
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,7 +58,7 @@ int main(int argc, char* argv[])
     titlePlant.dst = {575,351,35,45};
     titlePlant.src = {98,0,7,9};
     titlePlant.type = 'g';
-    titlePlant.numseeds = 3;
+    titlePlant.numseeds = 9;
 
     std::vector<plant> newplants;
 
@@ -122,7 +123,7 @@ int main(int argc, char* argv[])
       {
         if(onTheIvy && !inTheIvy)
         {
-          inTheIvy = true;
+          if(!jumping) inTheIvy = true;
         }
         if(inTheIvy)
         {
