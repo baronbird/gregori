@@ -12,8 +12,9 @@
 //                    improved collision
 //      2-16-2017 ::  added seed interactions
 //      2-17-2017 ::  fixed jumping on vines
+//       5-1-2017 ::  started adding hybrid plants
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
+// baronbird /////////////////////////////////////////////////////////////////////////////////
 
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
@@ -28,48 +29,49 @@
 #include"SDL_inits.h"
 #include"gregori.h"
 
-int main(int argc, char* argv[])
-{
-  if(!init() )
-  {
-    printf("Could not initialize SDL. SDL_Error: %s\n", SDL_GetError() );
-  }
-  else if(!loadMedia() )
-  {
-    printf("Could not load media. SDL_Error: %s\n", SDL_GetError() );
-  }
-  else
-  {
-    // control variables
-    bool quit{false}, noControls{true}, specialAnimation{false};
-    SDL_Event e;
-    const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-    int animation = ANIMAX;
-
-    // Gregori's variables
-    Gregori greg;
-    SDL_Rect gregSrc{0,0,7,7}, gregDst;
-    int frame{0}, deltaX{0}, deltaY{0}, jumps{2};
-    bool onPlatform{false}, inTheIvy{false}, jumping{false}, animation_switch{false};
-    bool onTheIvy{false}, climbing{false}, interacting{false};
-
-    // plant variables
-    plant titlePlant;
-    titlePlant.dst = {575,351,35,45};
-    titlePlant.src = {98,0,7,9};
-    titlePlant.type = 'g';
-    titlePlant.numseeds = 9;
-
-    std::vector<plant> newplants;
-
-    // seed inventory
-    plant seeds[8];
-    for(int i = 0; i < 8; i++)
-    {
-      seeds[i].dst = {15 + 25 * i,435,20,25};
-      seeds[i].src = {0,0,0,0};
-      seeds[i].type = 0;
+int main(int argc, char* argv[]) {
+    if(!init() ) {
+        printf("Could not initialize SDL. SDL_Error: %s\n", SDL_GetError() );
     }
+    else if(!loadMedia() ) {
+        printf("Could not load media. SDL_Error: %s\n", SDL_GetError() );
+    }
+    else {
+        // control variables
+        bool quit{false}, noControls{true}, specialAnimation{false}, plant_anim{false};
+        SDL_Event e;
+        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+        int animation{ANIMAX}, master_anim{2*ANIMAX};
+
+        // Gregori's variables
+        Gregori greg;
+        SDL_Rect gregSrc{0,0,7,7}, gregDst;
+        int frame{0}, deltaX{0}, deltaY{0}, jumps{1};
+        bool onPlatform{false}, inTheIvy{false}, jumping{false}, animation_switch{false};
+        bool onTheIvy{false}, climbing{false}, interacting{false};
+
+        // plant variables
+        plant titlePlant;
+        titlePlant.dst = {575,351,35,45};
+        titlePlant.src = {98,0,7,9};
+        titlePlant.type = 'g';
+        titlePlant.numseeds = 9;
+
+        plant mushvine;
+        mushvine.dst = {525,351,35,45};
+        mushvine.src = {98,9,7,9};
+        mushvine.type = 'v';
+        mushvine.numseeds = 1;
+
+        std::vector<plant> newplants;
+
+        // seed inventory
+        plant seeds[8];
+        for(int i = 0; i < 8; i++) {
+            seeds[i].dst = {15 + 25 * i,435,20,25};
+            seeds[i].src = {0,0,0,0};
+            seeds[i].type = 0;
+        }
 
     // platform variables
     SDL_Rect platformDst[10], platformSrc{0,7,16,3};
@@ -176,7 +178,7 @@ int main(int argc, char* argv[])
           {
             if(!jumping && jumps > 0)
             {
-              greg.moveVertically(-1);
+              greg.move(0,-1);
               deltaY = - 5;
               animation = 2;
               jumps--;
@@ -185,7 +187,7 @@ int main(int argc, char* argv[])
         }
         else if(!jumping && jumps > 0)
         {
-          greg.moveVertically(-1);
+          greg.move(0,-1);
           deltaY = -5;
           jumps--;
           animation = 2;
@@ -213,6 +215,24 @@ int main(int argc, char* argv[])
             }
           }
         }
+				else if(greg.isCollidingWith(mushvine.dst))
+				{
+					if(mushvine.numseeds > 0)
+					{
+						if(!interacting)
+						{
+							for(int i = 0; i < 8; i++)
+							{
+								if(seeds[i].type == 0)
+								{
+									seeds[i].type = mushvine.type;
+									mushvine.numseeds--;
+									break;
+								}
+							}
+						}
+					}
+				}
         else
         {
           if(!interacting)
@@ -221,12 +241,17 @@ int main(int argc, char* argv[])
             {
               gregDst = greg.getRenderRect();
               plant temp;
+							temp.type = seeds[0].type;
               if(seeds[0].type == 'g')
               {
-                temp.dst = {gregDst.x,gregDst.y - 165,25,200};
+								temp.dst = {gregDst.x,gregDst.y - 165,25,200};
                 temp.src = {64,10,5,40};
-                temp.type = 'g';
               }
+							else if(seeds[0].type == 'v')
+							{
+								temp.dst = {gregDst.x,gregDst.y - 185,45,220};
+								temp.src = {-9,63,9,44};
+							}
               newplants.push_back(temp);
               for(int i = 0; i < 7; i++)
               {
@@ -250,8 +275,7 @@ int main(int argc, char* argv[])
         }
       }
 
-      greg.moveVertically(deltaY);
-      greg.moveHorizontally(deltaX);
+      greg.move(deltaX,deltaY);
       
       onPlatform = false;
       for(int i = 0; i < 10; i++)
@@ -260,24 +284,24 @@ int main(int argc, char* argv[])
         {
           if(greg.isCollidingWith(platformDst[i]) == 2)
           {
-            greg.placeOn(platformDst[i]);
-            jumps = 2;
+            greg.place( "on", platformDst[i] );
+            jumps = 1;
             onPlatform = true;
             deltaY = 0;
           }
           else if(greg.isCollidingWith(platformDst[i]) == 1)
           {
-            greg.placeBelow(platformDst[i]);
+            greg.place( "below", platformDst[i] );
             if(deltaY < 0) deltaY = 0;
           }
           else if(greg.isCollidingWith(platformDst[i]) == 3)
           {
-            greg.placeLeftOf(platformDst[i]);
+            greg.place( "left of", platformDst[i] );
             deltaX = 0;
           }
           else if(greg.isCollidingWith(platformDst[i]) == 4)
           {
-            greg.placeRightOf(platformDst[i]);
+            greg.place( "right of", platformDst[i] );
             deltaX = 0;
             if(currentKeyStates[SDL_SCANCODE_LEFT]) specialAnimation = true;
           }
@@ -303,7 +327,7 @@ int main(int argc, char* argv[])
       {
         if(inTheIvy)
         {
-          greg.moveHorizontally(-deltaX);
+          greg.move(-deltaX,0);
           onTheIvy = false;
           for(int i = 0; i < 7; i++)
           {
@@ -312,8 +336,7 @@ int main(int argc, char* argv[])
           }
           if(!onTheIvy)
           {
-            greg.moveVertically(-deltaY);;
-            greg.moveHorizontally(deltaX);
+            greg.move(deltaX,deltaY);
             onTheIvy = false;
             for(int i = 0; i < 7; i++)
             {
@@ -369,6 +392,10 @@ int main(int argc, char* argv[])
         {
           seeds[i].src = {105,0,4,5};
         }
+				else if(seeds[i].type == 'v')
+				{
+					seeds[i].src = {105,9,4,5};
+				}
         else if(seeds[i].type == 0)
         {
           seeds[i].src = {0,0,0,0};
@@ -382,8 +409,16 @@ int main(int argc, char* argv[])
         }
         else if(newplants[i].type == 'g' && newplants[i].src.x < 84)
         {
-          if(animation_switch) newplants[i].src.x += 5;
+          if(plant_anim) newplants[i].src.x += 5;
         }
+				if(newplants[i].type == 'v' && newplants[i].src.x < 0)
+				{
+					newplants[i].src.x += 9;
+				}
+				else if(newplants[i].type == 'v' && newplants[i].src.x < 99)
+				{
+					if(plant_anim) newplants[i].src.x += 9;
+				}
       }
 
       // catch edges
@@ -407,6 +442,7 @@ int main(int argc, char* argv[])
       SDL_RenderClear(gRenderer);
       SDL_RenderCopy(gRenderer,spriteSheet,&titleSrc,&titleDst);
       SDL_RenderCopy(gRenderer,spriteSheet,&titlePlant.src,&titlePlant.dst);
+			SDL_RenderCopy(gRenderer,spriteSheet,&mushvine.src,&mushvine.dst);
       for(int i = 0; i < newplants.size(); i++)
       {
         SDL_RenderCopy(gRenderer,spriteSheet,&newplants[i].src,&newplants[i].dst);
@@ -442,6 +478,11 @@ int main(int argc, char* argv[])
         animation_switch = !animation_switch;
         animation = ANIMAX;
       } else if(!noControls) animation--;
+			if(master_anim == 0)
+			{
+				plant_anim = !plant_anim;
+				master_anim = 2*ANIMAX;
+			} else master_anim--;
       if(textBoxFrame == 119)
       {
         textBoxFrame = 0;

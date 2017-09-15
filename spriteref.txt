@@ -1,0 +1,83 @@
+SPRITE REFERENCE SHEET FOR GREGORI
+
+### Gregori ###################################################################################
+
+Size: 7x7
+
+States:
+	- IDLE: (0,0)
+	- RUNR1: (7,0)
+	- RUNR2: (14,0)
+	- RUNL1: (21,0)
+	- RUNL2: (28,0)
+	- CLIMB_UR1: (35,0)
+	- CLIMB_UR2: (42,0)
+	- CLIMB_R: (49,0)
+	- CLIMB_UL1: (56,0)
+	- CLIMB_UL2: (63,0)
+	- CLIMB_L: (70,0)
+	- CLIMB_U1: (77,0)
+	- CLIMB_U2: (84,0)
+	- CLIMB_I: (91,0)
+
+### Pots
+
+Size: 7x9
+
+Types:
+	- VINE: (98,0)
+	- CACTUS: (98,9)
+
+### Seeds
+
+Size: 4x5
+
+Types:
+	- VINE: (105,0)
+	- CACTUS: (105,9)
+
+### Platform
+
+Size: 16x3
+
+Location: (0,7)
+
+### Title
+
+Size: 69x26
+
+Location: (0,10)
+
+### Prompt
+
+Size: 52x26
+
+Location: (0,36)
+
+### Plain Vine
+
+Size: 5x40
+
+States:
+	- SPROUT: (69,10)
+	- GROW1: (74,10)
+	- GROW2: (79,10)
+	- STABLE: (84,10)
+
+### Mushvine
+
+Size: 9x44
+
+States:
+	- SPROUT: (0,63)
+	- GROW1: (9,63)
+	- GROW2: (18,63)
+	- GROW3: (27,63)
+	- GROW4: (36,63)
+	- GROW5: (45,63)
+	- GROW6: (54,63)
+	- GROW7: (63,63)
+	- GROW8: (72,63)
+	- GROW9: (81,63)
+	- GROW10: (90,63)
+	- STABLE: (99,63)
