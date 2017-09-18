@@ -24,7 +24,7 @@ in order to run the game, type `./Gregori` in the command prompt
 ### controls
 
 | key        | action             |
-+------------+--------------------+
+|------------|--------------------|
 | left/right | move               |
 | up         | start climbing     |
 | arrow keys | climb              |
