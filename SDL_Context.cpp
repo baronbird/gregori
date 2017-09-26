@@ -24,10 +24,12 @@ SDL_Context::SDL_Context() {
     window = NULL;
     renderer = NULL;
     spriteSheet = NULL;
+    initializationFailed = false;
 
     // initialize SDL with only the video subsystems
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Could not initialize SDL. SDL_Error: %s\n", SDL_GetError() );
+        initializationFailed = true;
     }
     else {
         // create game window with specified settings
@@ -37,23 +39,23 @@ SDL_Context::SDL_Context() {
             SDL_WINDOW_SHOWN);
         if(window == NULL) {
             printf("Could not create window. SDL_Error: %s\n", SDL_GetError() );
+            initializationFailed = true;
         }
         else {
             // create accelerated renderer
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
             if(renderer == NULL) {
                 printf("Could not create renderer. SDL_Error: %s\n", SDL_GetError() );
+                initializationFailed = true;
             }
             else {
                 // initialize SDL_image to load PNGs (our spritesheet is a png)
                 int imgFlags = IMG_INIT_PNG;
+
                 if( !( IMG_Init( imgFlags ) && imgFlags ) ) {
                     printf("Could not initialize SDL_image. IMG_Error: %s\n", IMG_GetError() );
-                    // this is a dealbreaker, so we destroy everything
-                    SDL_DestroyRenderer(renderer);
-                    SDL_DestroyWindow(window);
-                    renderer = NULL;
-                    window = NULL;
+                    initializationFailed = true;
                 }
             }
         }
@@ -74,19 +76,24 @@ SDL_Context::~SDL_Context() {
     SDL_DestroyWindow(window);
     renderer = NULL;
     window = NULL;
+
+    SDL_Quit();
 }
 
 
-// SDL_Context::initializationFailed ////////////////////////////////////////////////////////
+// SDL_Context::quit ////////////////////////////////////////////////////////////////////////
 //
-// checks if the constructor failed
+// check if we received a quit event
 //
-// @return              true if constructor failed, false otherwise
+// @return              true if quit event received, false otherwise
 
-bool SDL_Context::initializationFailed() {
-    if(renderer == NULL || window == NULL) {
-        return true;
+bool SDL_Context::quit() {
+    while( SDL_PollEvent(&event) != 0 ) {
+        if( event.type == SDL_QUIT ) {
+            return true;
+        }
     }
+    
     return false;
 }
 
@@ -146,5 +153,6 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
 // renders the current world state
 
 void SDL_Context::render() {
-    printf("rendering!\n");
+    // SDL_RenderPresent(blah);
+    // SDL_UpdateSurface(blah);
 }

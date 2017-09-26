@@ -20,14 +20,18 @@ class SDL_Context {
     public:
         SDL_Context();
         ~SDL_Context();
-        bool          initializationFailed();
+        bool          quit();
         bool          loadMedia();
         SDL_Texture  *loadTexture(std::string);
         void          render();
+
+        bool          initializationFailed;
+
     private:
         SDL_Window   *window;
         SDL_Renderer *renderer;
         SDL_Texture  *spriteSheet;
+        SDL_Event     event;
 };
 
 #endif

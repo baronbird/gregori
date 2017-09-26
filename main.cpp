@@ -25,14 +25,19 @@ int main(int argc, char* argv[]) {
     SDL_Context sdl;
 
     // make sure initialization did not fail
-    if( sdl.initializationFailed() ) {
+    if( sdl.initializationFailed ) {
         printf("Could not create SDL_Context\n");
     }
     else if( !sdl.loadMedia() ) {
         printf("Could not load spritesheets\n");
     }
     else {
-        printf("We're in business boys\n");
+        while( !sdl.quit() ) {
+
+            sdl.render();
+
+            SDL_Delay(50);
+        }
     }
 
     return EXIT_SUCCESS;
