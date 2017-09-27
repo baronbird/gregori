@@ -33,9 +33,9 @@ int main(int argc, char* argv[]) {
     }
     else {
         while( !sdl.quit() ) {
-
-            sdl.render();
-
+            
+            sdl.render(world_state);
+            
             SDL_Delay(50);
         }
     }

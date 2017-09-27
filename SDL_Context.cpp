@@ -152,7 +152,7 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
 //
 // renders the current world state
 
-void SDL_Context::render() {
-    // SDL_RenderPresent(blah);
-    // SDL_UpdateSurface(blah);
+void SDL_Context::render(std::vector<Game_Object> state) {
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
 }

@@ -1,6 +1,6 @@
 CC = g++
-CCFLAGS = -std=c++11 -lSDL2 -lSDL2_image -L/usr/local/lib -I/usr/local/include
-OFLAGS = -std=c++11 -c -I/usr/local/include
+CCFLAGS = -Wall -std=c++11 -lSDL2 -lSDL2_image -L/usr/local/lib -I/usr/local/include
+OFLAGS = -Wall -std=c++11 -c -I/usr/local/include
 
 Gregori:	SDL_Context.o SDL_Context.h
 	@echo Compiling Gregori...
@@ -12,8 +12,8 @@ SDL_Context.o: SDL_Context.cpp SDL_Context.h
 
 clean:
 	@echo Cleaning up...
-	@rm *.o Gregori
+	@rm -f *.o Gregori
 
 clean-o:
 	@echo Cleaning up .o files...
-	@rm *.o
+	@rm -f *.o

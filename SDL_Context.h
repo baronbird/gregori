@@ -15,6 +15,8 @@
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
 #include<string>
+#include<vector>
+#include"Game_Object.h"
 
 class SDL_Context {
     public:
@@ -23,7 +25,7 @@ class SDL_Context {
         bool          quit();
         bool          loadMedia();
         SDL_Texture  *loadTexture(std::string);
-        void          render();
+        void          render(std::vector<Game_Object>);
 
         bool          initializationFailed;
 
