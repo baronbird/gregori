@@ -36,6 +36,7 @@ class Game_Object {
         std::vector<SDL_Rect>   hitbox;
         std::vector<SDL_Rect>   hitbox_offsets;
         bool                    colliding;
+        sprite_t                current_sprite;
 };
 
 #endif

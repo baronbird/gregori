@@ -32,6 +32,8 @@ int main(int argc, char* argv[]) {
         printf("Could not load spritesheets\n");
     }
     else {
+        vector<GameObject> world_state;
+
         while( !sdl.quit() ) {
             
             sdl.render(world_state);
