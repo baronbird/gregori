@@ -18,7 +18,11 @@
 // baronbird /////////////////////////////////////////////////////////////////////////////////
 
 #include<stdio.h>
+#include<map>
 #include"SDL_Context.h"
+#include"Game_Object.h"
+
+extern std::map<std::string, SDL_Rect> spritemap;
 
 int main(int argc, char* argv[]) {
     // create new SDL context
@@ -32,7 +36,7 @@ int main(int argc, char* argv[]) {
         printf("Could not load spritesheets\n");
     }
     else {
-        vector<GameObject> world_state;
+        std::vector<Game_Object> world_state;
 
         while( !sdl.quit() ) {
             

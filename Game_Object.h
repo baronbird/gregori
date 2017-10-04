@@ -18,7 +18,10 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
+#include<SDL2/SDL.h>
+#include<SDL2/SDL_image.h>
 #include<vector>
+#include<string>
 
 // Game_Object ///////////////////////////////////////////////////////////////////////////////
 //
@@ -36,7 +39,7 @@ class Game_Object {
         std::vector<SDL_Rect>   hitbox;
         std::vector<SDL_Rect>   hitbox_offsets;
         bool                    colliding;
-        sprite_t                current_sprite;
+        std::string             current_sprite;
 };
 
 #endif

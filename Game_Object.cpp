@@ -17,6 +17,9 @@
 
 #include"Game_Object.h"
 
+Game_Object::Game_Object() {}
+
+Game_Object::~Game_Object() {}
 
 // Game_Object::updateHitbox /////////////////////////////////////////////////////////////////
 //
@@ -32,15 +35,15 @@ void Game_Object::updateHitbox() {
 
 // Gregori::isCollidingWith //////////////////////////////////////////////////////////////////
 //
-// checks for collision between two GameObjects
+// checks for collision between two Game_Objects
 //
-// @param object            the GameObject to check for collision
+// @param object            the Game_Object to check for collision
 // @return                  false if no collision exists
 //                          true is collision exists
 //
 // TODO: implement collision between two dynamic objects
 
-bool GameObject::isCollidingWith(GameObject object) {
+int Game_Object::isCollidingWith(Game_Object object) {
     bool collision = false;
 
     // TODO
@@ -52,12 +55,12 @@ bool GameObject::isCollidingWith(GameObject object) {
 }
 
 
-// GameObject::get_spriteLocation ////////////////////////////////////////////////////////////
+// Game_Object::get_spriteLocation ////////////////////////////////////////////////////////////
 //
-// returns the location of a GameObject's sprite. used in main to render the object
+// returns the location of a Game_Object's sprite. used in main to render the object
 //
 // @return                  spriteLocation
 
-SDL_Rect GameObject::get_spriteLocation() {
+SDL_Rect Game_Object::get_spriteLocation() {
     return spriteLocation;
 }
