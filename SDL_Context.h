@@ -2,12 +2,13 @@
 //
 // for Gregori
 // define SDL_Context class
-// represents a context for SDL to run in (a window, a renderer, and any textures)
+// represents a context for SDL to run in (a window, a renderer, and any
+// textures)
 //
 //        revision history
 //        9-18-2017 :: started
 //
-// baronbird ////////////////////////////////////////////////////////////////////////////////
+// baronbird ///////////////////////////////////////////////////////////////
 
 #ifndef SDL_INITS_H
 #define SDL_INITS_H

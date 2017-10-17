@@ -1,25 +1,28 @@
 // sprites.cpp
 //
 // for Gregori
-// defines the spritemap, which stores the location of any sprite we could ever want!
+// defines the spritemap, which stores the location of any sprite we could
+// ever want!
 //
 //      revision history
 //        9-8-2017 :: started
 //       9-27-2017 :: added sprite locations
 //
-// baronbird //////////////////////////////////////////////////////////////////////////////////
+// baronbird ///////////////////////////////////////////////////////////////
 
 #include<map>
 #include"SDL_Context.h"
 #include"sprites.h"
 
-// insert all sprite locations to spritemap //////////////////////////////////////////////////
+std::map<std::string, SDL_Rect> spritemap;
+
+// insert all sprite locations to spritemap ////////////////////////////////
 
 void add_sprite(std::string name, SDL_Rect location) {
     spritemap.insert( std::pair<std::string, SDL_Rect>( name, location ) );
 }
 
-void init_spritemap() {
+void spritemap_init() {
     // gregori
     add_sprite( "GREG_IDLE", {0,0,7,7} );
     add_sprite( "GREG_RUN_RIGHT1", {7,0,7,7} );

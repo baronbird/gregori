@@ -3,19 +3,23 @@
 // for Gregori
 // function definitions for SDL_Context class
 //
-// much borrowed from Lazy Foo's SDL tutorials (http://lazyfoo.net/tutorials/SDL/index.php)
+// much borrowed from Lazy Foo's SDL tutorials
+// (http://lazyfoo.net/tutorials/SDL/index.php)
 //
 //        revision history
 //        9-18-2017 :: started
 //
-// baronbird ////////////////////////////////////////////////////////////////////////////////
+// baronbird //////////////////////////////////////////////////////////////
 
 #include<stdio.h>
+#include<map>
 #include"SDL_Context.h"
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-// SDL_Context constructor //////////////////////////////////////////////////////////////////
+extern std::map<std::string, SDL_Rect> spritemap;
+
+// SDL_Context constructor /////////////////////////////////////////////////
 //
 // initializes SDL, creates window, creates renderer
 
@@ -28,7 +32,8 @@ SDL_Context::SDL_Context() {
 
     // initialize SDL with only the video subsystems
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Could not initialize SDL. SDL_Error: %s\n", SDL_GetError() );
+        printf("Could not initialize SDL. SDL_Error: %s\n",
+                SDL_GetError() );
         initializationFailed = true;
     }
     else {
@@ -38,23 +43,27 @@ SDL_Context::SDL_Context() {
             SCREEN_WIDTH, SCREEN_HEIGHT,
             SDL_WINDOW_SHOWN);
         if(window == NULL) {
-            printf("Could not create window. SDL_Error: %s\n", SDL_GetError() );
+            printf("Could not create window. SDL_Error: %s\n",
+                    SDL_GetError() );
             initializationFailed = true;
         }
         else {
             // create accelerated renderer
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            renderer = SDL_CreateRenderer(window, -1,
+                    SDL_RENDERER_ACCELERATED);
 
             if(renderer == NULL) {
-                printf("Could not create renderer. SDL_Error: %s\n", SDL_GetError() );
+                printf("Could not create renderer. SDL_Error: %s\n",
+                        SDL_GetError() );
                 initializationFailed = true;
             }
             else {
-                // initialize SDL_image to load PNGs (our spritesheet is a png)
+                // initialize SDL_image to load PNGs
                 int imgFlags = IMG_INIT_PNG;
 
                 if( !( IMG_Init( imgFlags ) && imgFlags ) ) {
-                    printf("Could not initialize SDL_image. IMG_Error: %s\n", IMG_GetError() );
+                    printf("Could not init SDL_image. IMG_Error: %s\n",
+                            IMG_GetError() );
                     initializationFailed = true;
                 }
             }
@@ -63,10 +72,10 @@ SDL_Context::SDL_Context() {
 }
 
 
-// SDL_Context deconstructor ////////////////////////////////////////////////////////////////
+// SDL_Context deconstructor ///////////////////////////////////////////////
 // 
-// frees all resources allocated on the heap, because no one like memory leaks, especially
-// not me!
+// frees all resources allocated on the heap, because no one like memory
+// leaks, especially not me!
 
 SDL_Context::~SDL_Context() {
     SDL_DestroyTexture(spriteSheet);
@@ -81,7 +90,7 @@ SDL_Context::~SDL_Context() {
 }
 
 
-// SDL_Context::quit ////////////////////////////////////////////////////////////////////////
+// SDL_Context::quit ///////////////////////////////////////////////////////
 //
 // check if we received a quit event
 //
@@ -98,7 +107,7 @@ bool SDL_Context::quit() {
 }
 
 
-// SDL_Context::loadMedia ///////////////////////////////////////////////////////////////////
+// SDL_Context::loadMedia //////////////////////////////////////////////////
 //
 // loads all necessary textures (currently only one!)
 //
@@ -117,7 +126,7 @@ bool SDL_Context::loadMedia() {
 }
 
 
-// SDL_Context::loadTexture /////////////////////////////////////////////////////////////////
+// SDL_Context::loadTexture ////////////////////////////////////////////////
 //
 // helper function for loadMedia() :: creates a texture from a .png file
 //
@@ -138,7 +147,8 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
         // convert surface into texture
         imageTexture = SDL_CreateTextureFromSurface(renderer,imageSurface);
         if(imageTexture == NULL) {
-            printf("Could not create texture. SDL_Error: %s\n", SDL_GetError() );
+            printf("Could not create texture. SDL_Error: %s\n",
+                    SDL_GetError() );
         }
     }
     // free the image surface
@@ -148,11 +158,16 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
 }
 
 
-// SDL_Context::render ///////////////////////////////////////////////////////////////////////
+// SDL_Context::render /////////////////////////////////////////////////////
 //
 // renders the current world state
 
 void SDL_Context::render(std::vector<Game_Object> state) {
     SDL_RenderClear(renderer);
+    for(auto it = state.begin(); it != state.end(); it++) {
+        SDL_RenderCopy(renderer, spriteSheet,
+                &spritemap[it->get_current_sprite()],
+                it->get_spriteLocation());
+    }
     SDL_RenderPresent(renderer);
 }
