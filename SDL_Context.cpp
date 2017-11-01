@@ -69,6 +69,8 @@ SDL_Context::SDL_Context() {
             }
         }
     }
+
+    camera = {50,30, SCREEN_WIDTH, SCREEN_HEIGHT};
 }
 
 
@@ -165,9 +167,17 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
 void SDL_Context::render(std::vector<Game_Object> state) {
     SDL_RenderClear(renderer);
     for(auto it = state.begin(); it != state.end(); it++) {
+        // grab sprite location
+        SDL_Rect *temp_spriteLocation = it->get_spriteLocation();
+
+        // convert to camera coordinates
+        temp_spriteLocation->x -= camera.x;
+        temp_spriteLocation->y -= camera.y;
+
+        // render
         SDL_RenderCopy(renderer, spriteSheet,
                 &spritemap[it->get_current_sprite()],
-                it->get_spriteLocation());
+                temp_spriteLocation);
     }
     SDL_RenderPresent(renderer);
 }

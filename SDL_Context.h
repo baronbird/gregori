@@ -35,6 +35,7 @@ class SDL_Context {
         SDL_Renderer *renderer;
         SDL_Texture  *spriteSheet;
         SDL_Event     event;
+        SDL_Rect      camera;
 };
 
 #endif

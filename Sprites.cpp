@@ -12,7 +12,7 @@
 
 #include<map>
 #include"SDL_Context.h"
-#include"sprites.h"
+#include"Sprites.h"
 
 std::map<std::string, SDL_Rect> spritemap;
 
