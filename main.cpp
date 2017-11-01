@@ -21,8 +21,9 @@
 #include<fstream>
 #include<map>
 #include"SDL_Context.h"
-#include"Gregori.h"
-#include"Platform.h"
+#include"Game_Object.h"
+// #include"Gregori.h"
+// #include"Platform.h"
 #include"Sprites.h"
 
 extern std::map<std::string, SDL_Rect> spritemap;

@@ -15,19 +15,21 @@
 //                          directions
 //      9-26-2017 ::  started generalizing class
 //
-// baronbird ///////////////////////////////////////////////////////////////
+// baronbird //////////////////////////////////////////////////////////////////
 
 #include"Game_Object.h"
 
-Game_Object::Game_Object() {
-    spriteLocation = { 575, 351, 35, 35 };
-}
+// constructor for Game_Object ////////////////////////////////////////////////
 
+Game_Object::Game_Object() {}
+
+
+// deconstructor for Game_Object //////////////////////////////////////////////
 
 Game_Object::~Game_Object() {}
 
 
-// Game_Object::updateHitbox ///////////////////////////////////////////////
+// Game_Object::updateHitbox //////////////////////////////////////////////////
 //
 // keeps hitbox inline with sprite using hitbox offsets
 
@@ -39,7 +41,7 @@ void Game_Object::updateHitbox() {
 }
 
 
-// Gregori::isCollidingWith ////////////////////////////////////////////////
+// Gregori::isCollidingWith ///////////////////////////////////////////////////
 //
 // checks for collision between two Game_Objects
 //
@@ -68,7 +70,7 @@ int Game_Object::isCollidingWith(Game_Object &object) {
 }
 
 
-// Game_Object::get_spriteLocation /////////////////////////////////////////
+// Game_Object::get_spriteLocation ////////////////////////////////////////////
 //
 // returns the location of a Game_Object's sprite. used in main to render
 // the object
@@ -80,7 +82,7 @@ SDL_Rect *Game_Object::get_spriteLocation() {
 }
 
 
-// Game_Object::get_current_sprite /////////////////////////////////////////
+// Game_Object::get_current_sprite ////////////////////////////////////////////
 //
 // returns the current sprite image
 //
@@ -89,3 +91,87 @@ SDL_Rect *Game_Object::get_spriteLocation() {
 std::string Game_Object::get_current_sprite() {
     return current_sprite;
 }
+
+
+// Gregori ////////////////////////////////////////////////////////////////////
+
+// constructor for Gregori ////////////////////////////////////////////////////
+//
+// makes Gregori at the given position
+//
+// @param x         x location
+// @param y         y location
+
+Gregori::Gregori(int x, int y) {
+    spriteLocation = { x, y, 35, 35 };
+    velocity = { 0, 0 };
+    current_sprite = "GREG_IDLE";
+    hitbox.push_back( { { 0, 0, 25, 20 }, { 5, 0 } } );
+    hitbox.push_back( { { 0, 0, 15, 10 }, { 10, 25 } } );
+    updateHitbox();
+}
+
+    
+// deconstructor for Gregori //////////////////////////////////////////////////
+//
+// nothing to clean up!
+
+Gregori::~Gregori() {}
+
+
+// Gregori::control ///////////////////////////////////////////////////////////
+//
+// given current key states and Gregori's current state, change Gregori's
+// state
+//
+// @param currentKeyStates      an array containing the current key states
+
+void Gregori::control(const Uint8 *currentKeyStates) {
+    // TODO: implement key state controls
+}
+
+
+// Gregori::updateAnimation ///////////////////////////////////////////////////
+//
+// given Gregori's current animation frame and state, choose the next
+// animation for Gregori
+
+void Gregori::updateAnimation() {
+    // TODO: implement FSM for animation. figure out when to trigger
+}
+
+
+// Gregori::updatePosition ////////////////////////////////////////////////////
+//
+// add Gregori's velocity to his position, checking for collisions along the
+// way
+
+void Gregori::updatePosition() {
+    spriteLocation.x += velocity.x;
+    spriteLocation.y += velocity.y;
+    // TODO: add collision checking
+}
+
+
+// Platform ///////////////////////////////////////////////////////////////////
+
+// constructor for Platform ////////////////////////////////////////////////
+//
+// places Platform at the given position
+//
+// @param x         x location
+// @param y         y location
+
+Platform::Platform(int x, int y) {
+    spriteLocation = { x, y, 80, 15 };
+    current_sprite = "PLATFORM";
+    hitbox.push_back( { { 0, 0, 80, 15 }, { 0, 0 } } );
+    updateHitbox();
+}
+
+    
+// deconstructor for Platform //////////////////////////////////////////////
+//
+// nothing to clean up!
+
+Platform::~Platform() {}

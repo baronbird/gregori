@@ -70,7 +70,7 @@ SDL_Context::SDL_Context() {
         }
     }
 
-    camera = {50,30, SCREEN_WIDTH, SCREEN_HEIGHT};
+    camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 }
 
 
