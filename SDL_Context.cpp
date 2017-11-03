@@ -9,17 +9,18 @@
 //        revision history
 //        9-18-2017 :: started
 //
-// baronbird //////////////////////////////////////////////////////////////
+// baronbird //////////////////////////////////////////////////////////////////
 
 #include<stdio.h>
 #include<map>
 #include"SDL_Context.h"
+#include"Sprites.h"
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-extern std::map<std::string, SDL_Rect> spritemap;
+extern Spritemap spritemap;
 
-// SDL_Context constructor /////////////////////////////////////////////////
+// SDL_Context constructor ////////////////////////////////////////////////////
 //
 // initializes SDL, creates window, creates renderer
 
@@ -28,13 +29,13 @@ SDL_Context::SDL_Context() {
     window = NULL;
     renderer = NULL;
     spriteSheet = NULL;
-    initializationFailed = false;
+    init_success = true;
 
     // initialize SDL with only the video subsystems
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Could not initialize SDL. SDL_Error: %s\n",
                 SDL_GetError() );
-        initializationFailed = true;
+        init_success = false;
     }
     else {
         // create game window with specified settings
@@ -45,7 +46,7 @@ SDL_Context::SDL_Context() {
         if(window == NULL) {
             printf("Could not create window. SDL_Error: %s\n",
                     SDL_GetError() );
-            initializationFailed = true;
+            init_success = false;
         }
         else {
             // create accelerated renderer
@@ -55,7 +56,7 @@ SDL_Context::SDL_Context() {
             if(renderer == NULL) {
                 printf("Could not create renderer. SDL_Error: %s\n",
                         SDL_GetError() );
-                initializationFailed = true;
+                init_success = false;
             }
             else {
                 // initialize SDL_image to load PNGs
@@ -64,17 +65,18 @@ SDL_Context::SDL_Context() {
                 if( !( IMG_Init( imgFlags ) && imgFlags ) ) {
                     printf("Could not init SDL_image. IMG_Error: %s\n",
                             IMG_GetError() );
-                    initializationFailed = true;
+                    init_success = true;
                 }
             }
         }
     }
 
+    // place camera at starting position
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 }
 
 
-// SDL_Context deconstructor ///////////////////////////////////////////////
+// SDL_Context deconstructor //////////////////////////////////////////////////
 // 
 // frees all resources allocated on the heap, because no one like memory
 // leaks, especially not me!
@@ -92,7 +94,7 @@ SDL_Context::~SDL_Context() {
 }
 
 
-// SDL_Context::quit ///////////////////////////////////////////////////////
+// SDL_Context::quit //////////////////////////////////////////////////////////
 //
 // check if we received a quit event
 //
@@ -109,7 +111,7 @@ bool SDL_Context::quit() {
 }
 
 
-// SDL_Context::loadMedia //////////////////////////////////////////////////
+// SDL_Context::loadMedia /////////////////////////////////////////////////////
 //
 // loads all necessary textures (currently only one!)
 //
@@ -128,7 +130,7 @@ bool SDL_Context::loadMedia() {
 }
 
 
-// SDL_Context::loadTexture ////////////////////////////////////////////////
+// SDL_Context::loadTexture ///////////////////////////////////////////////////
 //
 // helper function for loadMedia() :: creates a texture from a .png file
 //
@@ -160,13 +162,16 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
 }
 
 
-// SDL_Context::render /////////////////////////////////////////////////////
+// SDL_Context::render ////////////////////////////////////////////////////////
 //
 // renders the current world state
 
 void SDL_Context::render(std::vector<Game_Object> state) {
     SDL_RenderClear(renderer);
     for(auto it = state.begin(); it != state.end(); it++) {
+        // grap spritesheet coordinates
+        SDL_Rect temp_ssLocation = spritemap[it->get_current_sprite()];
+
         // grab sprite location
         SDL_Rect *temp_spriteLocation = it->get_spriteLocation();
 
@@ -176,8 +181,16 @@ void SDL_Context::render(std::vector<Game_Object> state) {
 
         // render
         SDL_RenderCopy(renderer, spriteSheet,
-                &spritemap[it->get_current_sprite()],
+                &temp_ssLocation,
                 temp_spriteLocation);
     }
     SDL_RenderPresent(renderer);
+}
+
+// SDL_Context::initializationFailed //////////////////////////////////////////
+//
+// checks if there was an error in constructing the SDL_Context object
+
+bool SDL_Context::initializationFailed() {
+    return !init_success;
 }

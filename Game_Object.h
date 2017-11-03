@@ -21,8 +21,6 @@
 #define GAME_OBJECT_H
 
 #include<SDL2/SDL.h>
-#include<SDL2/SDL_image.h>
-#include<utility>
 #include<vector>
 #include<string>
 

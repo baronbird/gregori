@@ -1,23 +1,30 @@
-// sprites.h
+// Sprites.h
 //
 // for Gregori
-// defines the spritemap, which stores the location of any sprite we could ever want!
+// defines the Spritemap class, which stores the location of all sprites
 //
 //      revision history
 //        9-8-2017 :: started
 //       9-27-2017 :: added sprite locations
+//       11-3-2017 :: converted to class for nicer interface
 //
-// baronbird ///////////////////////////////////////////////////////////////
+// baronbird //////////////////////////////////////////////////////////////////
 
 #ifndef SPRITES_H
 #define SPRITES_H
 
 #include<SDL2/SDL.h>
-#include<SDL2/SDL_image.h>
+#include<map>
 
-// spritemap helper functions //////////////////////////////////////////////
+// spritemap class definition /////////////////////////////////////////////////
 
-void spritemap_init();
-void add_sprite(std::string, SDL_Rect);
+class Spritemap {
+    public:
+        Spritemap();
+        SDL_Rect operator[](std::string);
+
+    private:
+        std::map<std::string, SDL_Rect> spritemap;
+};
 
 #endif

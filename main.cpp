@@ -14,29 +14,34 @@
 //      2-17-2017 ::  fixed jumping on vines
 //       5-1-2017 ::  started adding hybrid plants
 //      9-16-2017 ::  start completely refactoring main
+//      11-3-2017 ::  introduced new spritemap interface
 //
-// baronbird ///////////////////////////////////////////////////////////////
+// baronbird //////////////////////////////////////////////////////////////////
 
+// includes
 #include<stdio.h>
 #include<fstream>
-#include<map>
 #include"SDL_Context.h"
 #include"Game_Object.h"
-// #include"Gregori.h"
-// #include"Platform.h"
 #include"Sprites.h"
 
-extern std::map<std::string, SDL_Rect> spritemap;
+// macros
+#define FRAME_LENGTH 1000.0/60.0
+
+// globals
+Spritemap spritemap;
+
+// main execution /////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
     // create new SDL context
     SDL_Context sdl;
-    spritemap_init();
 
+    // TODO(sam): class to handle loading and storing of level data
     std::ifstream level_loader("level.txt");
 
     // make sure initialization did not fail
-    if( sdl.initializationFailed ) {
+    if( sdl.initializationFailed() ) {
         printf("Could not create SDL_Context\n");
     }
     else if( !sdl.loadMedia() ) {
@@ -45,6 +50,7 @@ int main(int argc, char* argv[]) {
     else {
         std::vector<Game_Object> world_state;
 
+        // TODO(sam): see above
         char object_type;
         while(level_loader >> object_type) {
             int x, y;
@@ -66,7 +72,7 @@ int main(int argc, char* argv[]) {
             
             sdl.render(world_state);
             
-            SDL_Delay(50);
+            SDL_Delay(FRAME_LENGTH);
         }
     }
 

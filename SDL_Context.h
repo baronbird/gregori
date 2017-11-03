@@ -8,7 +8,7 @@
 //        revision history
 //        9-18-2017 :: started
 //
-// baronbird ///////////////////////////////////////////////////////////////
+// baronbird //////////////////////////////////////////////////////////////////
 
 #ifndef SDL_INITS_H
 #define SDL_INITS_H
@@ -27,8 +27,7 @@ class SDL_Context {
         bool          loadMedia();
         SDL_Texture  *loadTexture(std::string);
         void          render(std::vector<Game_Object>);
-
-        bool          initializationFailed;
+        bool          initializationFailed();
 
     private:
         SDL_Window   *window;
@@ -36,6 +35,7 @@ class SDL_Context {
         SDL_Texture  *spriteSheet;
         SDL_Event     event;
         SDL_Rect      camera;
+        bool          init_success;
 };
 
 #endif
