@@ -20,14 +20,13 @@
 
 // includes
 #include<stdio.h>
-#include<unistd.h>
 #include<fstream>
 #include"SDL_Context.h"
 #include"Game_Object.h"
 #include"Sprites.h"
 
 // macros
-#define FRAME_LENGTH 1000000.0/60.0
+#define FRAME_LENGTH 1000.0/60.0
 
 // globals
 Spritemap spritemap;
@@ -81,7 +80,7 @@ int main(int argc, char* argv[]) {
             sdl.render(world_state);
             world_state.pop_back();
             
-            usleep(FRAME_LENGTH);
+            SDL_Delay(FRAME_LENGTH);
         }
     }
 
