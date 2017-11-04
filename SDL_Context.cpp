@@ -166,14 +166,14 @@ SDL_Texture* SDL_Context::loadTexture(std::string path) {
 //
 // renders the current world state
 
-void SDL_Context::render(std::vector<Game_Object> state) {
+void SDL_Context::render(std::vector<Game_Object*> state) {
     SDL_RenderClear(renderer);
     for(auto it = state.begin(); it != state.end(); it++) {
         // grap spritesheet coordinates
-        SDL_Rect temp_ssLocation = spritemap[it->get_current_sprite()];
+        SDL_Rect temp_ssLocation = spritemap[(*it)->get_current_sprite()];
 
         // grab sprite location
-        SDL_Rect *temp_spriteLocation = it->get_spriteLocation();
+        SDL_Rect *temp_spriteLocation = (*it)->get_spriteLocation();
 
         // convert to camera coordinates
         temp_spriteLocation->x -= camera.x;

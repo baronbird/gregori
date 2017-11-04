@@ -20,13 +20,14 @@
 
 // includes
 #include<stdio.h>
+#include<unistd.h>
 #include<fstream>
 #include"SDL_Context.h"
 #include"Game_Object.h"
 #include"Sprites.h"
 
 // macros
-#define FRAME_LENGTH 1000.0/60.0
+#define FRAME_LENGTH 1000000.0/60.0
 
 // globals
 Spritemap spritemap;
@@ -48,7 +49,9 @@ int main(int argc, char* argv[]) {
         printf("Could not load spritesheets\n");
     }
     else {
-        std::vector<Game_Object> world_state;
+        std::vector<Game_Object *> world_state;
+        Gregori greg(0,0);
+        const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
         // TODO(sam): see above
         char object_type;
@@ -57,11 +60,11 @@ int main(int argc, char* argv[]) {
             switch(object_type) {
                 case 'g':
                     level_loader >> x >> y;
-                    world_state.push_back(Gregori(x, y));
+                    greg = Gregori(x, y);
                     break;
                 case 's':
                     level_loader >> x >> y;
-                    world_state.push_back(Platform(x, y));
+                    world_state.push_back(new Platform(x, y));
                     break;
                 default:
                     printf("Level file formatted incorrectly\n");
@@ -69,10 +72,16 @@ int main(int argc, char* argv[]) {
         }
 
         while( !sdl.quit() ) {
-            
+            greg.control(currentKeyStates);
+
+            world_state.push_back(&greg);
+            for(auto &object : world_state) {
+                object->updatePosition();
+            }
             sdl.render(world_state);
+            world_state.pop_back();
             
-            SDL_Delay(FRAME_LENGTH);
+            usleep(FRAME_LENGTH);
         }
     }
 

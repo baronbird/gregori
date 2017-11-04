@@ -26,7 +26,7 @@ class SDL_Context {
         bool          quit();
         bool          loadMedia();
         SDL_Texture  *loadTexture(std::string);
-        void          render(std::vector<Game_Object>);
+        void          render(std::vector<Game_Object*>);
         bool          initializationFailed();
 
     private:

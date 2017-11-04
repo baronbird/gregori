@@ -41,7 +41,27 @@ void Game_Object::updateHitbox() {
 }
 
 
-// Gregori::isCollidingWith ///////////////////////////////////////////////////
+// Game_Object::updatePosition ////////////////////////////////////////////////
+//
+// add Gregori's velocity to his position, checking for collisions along the
+// way
+
+void Game_Object::updatePosition() {
+    spriteLocation.x = spriteLocation.x + velocity.x;
+    spriteLocation.y = spriteLocation.y + velocity.y;
+    velocity = { 0, 0 };
+    // TODO: add collision checking
+}
+
+
+// Game_Object::updateAnimation ///////////////////////////////////////////////
+//
+// this will be overloaded
+
+void Game_Object::updateAnimation() {}
+
+
+// Game_Object::isCollidingWith ///////////////////////////////////////////////
 //
 // checks for collision between two Game_Objects
 //
@@ -128,6 +148,18 @@ Gregori::~Gregori() {}
 
 void Gregori::control(const Uint8 *currentKeyStates) {
     // TODO: implement key state controls
+    if(currentKeyStates[SDL_SCANCODE_UP]) {
+        // do nothing for now
+    }
+    else if(currentKeyStates[SDL_SCANCODE_DOWN]) {
+        // do nothing for now
+    }
+    else if(currentKeyStates[SDL_SCANCODE_LEFT]) {
+        velocity = { -3, 0 };
+    }
+    else if(currentKeyStates[SDL_SCANCODE_RIGHT]) {
+        velocity = { 3, 0 };
+    }
 }
 
 
@@ -138,18 +170,6 @@ void Gregori::control(const Uint8 *currentKeyStates) {
 
 void Gregori::updateAnimation() {
     // TODO: implement FSM for animation. figure out when to trigger
-}
-
-
-// Gregori::updatePosition ////////////////////////////////////////////////////
-//
-// add Gregori's velocity to his position, checking for collisions along the
-// way
-
-void Gregori::updatePosition() {
-    spriteLocation.x += velocity.x;
-    spriteLocation.y += velocity.y;
-    // TODO: add collision checking
 }
 
 
@@ -175,3 +195,14 @@ Platform::Platform(int x, int y) {
 // nothing to clean up!
 
 Platform::~Platform() {}
+
+
+// Platform::updateAnimation //////////////////////////////////////////////////
+//
+// animate platform
+
+void Platform::updateAnimation() {
+    // TODO: implement FSM for animation. figure out when to trigger
+}
+
+

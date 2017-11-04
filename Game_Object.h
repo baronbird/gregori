@@ -37,12 +37,15 @@ class Game_Object {
     public:
         Game_Object();
         ~Game_Object();
-        void        updateHitbox();
-        int         isCollidingWith(Game_Object &);
-        SDL_Rect   *get_spriteLocation();
-        std::string get_current_sprite();
+        void            updateHitbox();
+        void            updatePosition();
+        virtual void    updateAnimation();
+        int             isCollidingWith(Game_Object &);
+        SDL_Rect       *get_spriteLocation();
+        std::string     get_current_sprite();
     protected:
         SDL_Rect                    spriteLocation;
+        SDL_Point                   velocity;
         std::vector<hitbox_part>    hitbox;
         std::string                 current_sprite;
 };
@@ -58,10 +61,8 @@ class Gregori : public Game_Object {
         ~Gregori();
         void control(const Uint8*);
         void updateAnimation();
-        void updatePosition();
         
     private:
-        SDL_Point velocity;
         int num_seeds;
 
 };
@@ -75,6 +76,7 @@ class Platform : public Game_Object {
     public:
         Platform(int, int);
         ~Platform();
+        virtual void    updateAnimation();
         
 };
 
