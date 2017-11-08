@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
                 case 's':
                     level_loader >> x >> y;
                     world_state.push_back(new Platform(x, y));
+                    
                     break;
                 default:
                     printf("Level file formatted incorrectly\n");

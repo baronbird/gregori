@@ -186,6 +186,7 @@ Platform::Platform(int x, int y) {
     spriteLocation = { x, y, 80, 15 };
     current_sprite = "PLATFORM";
     hitbox.push_back( { { 0, 0, 80, 15 }, { 0, 0 } } );
+    velocity = { 0, 0 };
     updateHitbox();
 }
 
