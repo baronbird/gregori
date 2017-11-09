@@ -5,9 +5,9 @@ TARGETS = Gregori
 
 all:	$(TARGETS)
 
-Gregori:	SDL_Context.o Sprites.o	Game_Object.o main.cpp
+Gregori:	SDL_Context.o Sprites.o	Game_Object.o Level.o main.cpp
 	@echo Compiling Gregori...
-	@$(CC) $(CCFLAGS) -o Gregori main.cpp SDL_Context.o Game_Object.o Sprites.o
+	@$(CC) $(CCFLAGS) -o Gregori main.cpp SDL_Context.o Game_Object.o Sprites.o Level.o
 
 %.o: %.cpp %.h
 	@echo Compiling $@...

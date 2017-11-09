@@ -24,6 +24,7 @@
 #include"SDL_Context.h"
 #include"Game_Object.h"
 #include"Sprites.h"
+#include"Level.h"
 
 // macros
 #define FRAME_LENGTH 1000.0/60.0
@@ -37,9 +38,6 @@ int main(int argc, char* argv[]) {
     // create new SDL context
     SDL_Context sdl;
 
-    // TODO(sam): class to handle loading and storing of level data
-    std::ifstream level_loader("level.txt");
-
     // make sure initialization did not fail
     if( sdl.initializationFailed() ) {
         printf("Could not create SDL_Context\n");
@@ -52,34 +50,12 @@ int main(int argc, char* argv[]) {
         Gregori greg(0,0);
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
 
-        // TODO(sam): see above
-        char object_type;
-        while(level_loader >> object_type) {
-            int x, y;
-            switch(object_type) {
-                case 'g':
-                    level_loader >> x >> y;
-                    greg = Gregori(x, y);
-                    break;
-                case 's':
-                    level_loader >> x >> y;
-                    world_state.push_back(new Platform(x, y));
-                    
-                    break;
-                default:
-                    printf("Level file formatted incorrectly\n");
-            }
-        }
+        Level lvl("level.txt");
 
         while( !sdl.quit() ) {
-            greg.control(currentKeyStates);
-
-            world_state.push_back(&greg);
-            for(auto &object : world_state) {
-                object->updatePosition();
-            }
-            sdl.render(world_state);
-            world_state.pop_back();
+            lvl.greg.control(currentKeyStates);
+            lvl.update();
+            lvl.render(sdl);
             
             SDL_Delay(FRAME_LENGTH);
         }
