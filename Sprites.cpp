@@ -77,4 +77,8 @@ Spritemap::Spritemap() {
     spritemap.emplace( "MUSHVINE_GROWING10", (SDL_Rect){81,63,9,44} );
     spritemap.emplace( "MUSHVINE_GROWING11", (SDL_Rect){90,63,9,44} );
     spritemap.emplace( "MUSHVINE_FULL_SIZE", (SDL_Rect){99,63,9,44} );
+
+    // test square
+    spritemap.emplace( "TEST_SQUARE", (SDL_Rect){0,108,32,32} );
+    
 }

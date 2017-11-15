@@ -151,13 +151,13 @@ void Gregori::control(const Uint8 *currentKeyStates) {
     if(currentKeyStates[SDL_SCANCODE_UP]) {
         // do nothing for now
     }
-    else if(currentKeyStates[SDL_SCANCODE_DOWN]) {
+    if(currentKeyStates[SDL_SCANCODE_DOWN]) {
         // do nothing for now
     }
-    else if(currentKeyStates[SDL_SCANCODE_LEFT]) {
+    if(currentKeyStates[SDL_SCANCODE_LEFT]) {
         velocity = { -3, 0 };
     }
-    else if(currentKeyStates[SDL_SCANCODE_RIGHT]) {
+    if(currentKeyStates[SDL_SCANCODE_RIGHT]) {
         velocity = { 3, 0 };
     }
 }
