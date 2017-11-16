@@ -44,7 +44,7 @@ Level::Level(std::string filename) {
 // deletes any objects in world_state
 
 Level::~Level() {
-    for(auto &object : world_state) {
+    for(auto object : world_state) {
         delete object;
     }
 }
@@ -66,8 +66,8 @@ void Level::render(SDL_Context &sdl) {
 // updates objects in world state and gregori
 
 void Level::update() {
-    for (auto &object : world_state) {
-        object->updatePosition();
-    }
+    // for (auto &object : world_state) {
+        // object->updatePosition();
+    // }
     greg.updatePosition();
 }

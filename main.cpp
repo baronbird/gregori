@@ -28,6 +28,7 @@
 
 // macros
 #define FRAME_LENGTH 1000.0/60.0
+#define ANIMATION_FRAMES 4
 
 // globals
 Spritemap spritemap;
@@ -46,14 +47,22 @@ int main(int argc, char* argv[]) {
         printf("Could not load spritesheets\n");
     }
     else {
-        std::vector<Game_Object *> world_state;
-        Gregori greg(0,0);
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+        int animation_counter = 0;
 
         Level lvl("level.txt");
 
         while( !sdl.quit() ) {
             lvl.greg.control(currentKeyStates);
+
+            if(animation_counter == ANIMATION_FRAMES) {
+                lvl.greg.updateAnimation();
+                animation_counter = 0;
+            }
+            else {
+                animation_counter++;
+            }
+
             lvl.update();
             lvl.render(sdl);
             

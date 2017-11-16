@@ -36,11 +36,11 @@ struct hitbox_part {
 class Game_Object {
     public:
         Game_Object();
-        ~Game_Object();
+        virtual ~Game_Object();
         void            updateHitbox();
         void            updatePosition();
         virtual void    updateAnimation();
-        int             isCollidingWith(Game_Object &);
+        bool            isCollidingWith(Game_Object &);
         SDL_Rect       *get_spriteLocation();
         std::string     get_current_sprite();
     protected:
@@ -63,7 +63,8 @@ class Gregori : public Game_Object {
         void updateAnimation();
         
     private:
-        int num_seeds;
+        // int num_seeds;
+        bool onPlatform;
 
 };
 

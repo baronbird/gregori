@@ -14,6 +14,7 @@
 //                          with single functions that handle multiple
 //                          directions
 //      9-26-2017 ::  started generalizing class
+//     11-15-2017 ::  added running animations for Gregori
 //
 // baronbird //////////////////////////////////////////////////////////////////
 
@@ -49,8 +50,7 @@ void Game_Object::updateHitbox() {
 void Game_Object::updatePosition() {
     spriteLocation.x = spriteLocation.x + velocity.x;
     spriteLocation.y = spriteLocation.y + velocity.y;
-    velocity = { 0, 0 };
-    // TODO: add collision checking
+    velocity = {0, 0};
 }
 
 
@@ -71,7 +71,7 @@ void Game_Object::updateAnimation() {}
 //
 // TODO: implement collision between two dynamic objects
 
-int Game_Object::isCollidingWith(Game_Object &object) {
+bool Game_Object::isCollidingWith(Game_Object &object) {
     bool collision = false;
 
     for( auto hit : hitbox ) {
@@ -126,6 +126,7 @@ Gregori::Gregori(int x, int y) {
     spriteLocation = { x, y, 35, 35 };
     velocity = { 0, 0 };
     current_sprite = "GREG_IDLE";
+    onPlatform = true;
     hitbox.push_back( { { 0, 0, 25, 20 }, { 5, 0 } } );
     hitbox.push_back( { { 0, 0, 15, 10 }, { 10, 25 } } );
     updateHitbox();
@@ -170,6 +171,58 @@ void Gregori::control(const Uint8 *currentKeyStates) {
 
 void Gregori::updateAnimation() {
     // TODO: implement FSM for animation. figure out when to trigger
+    if(current_sprite == "GREG_IDLE") {
+        if(velocity.x > 0 && onPlatform) {
+            current_sprite = "GREG_RUN_RIGHT1";
+        }
+        else if(velocity.x < 0 && onPlatform) {
+            current_sprite = "GREG_RUN_LEFT1";
+        }
+    }
+    else if(current_sprite == "GREG_RUN_RIGHT1") {
+        if(velocity.x > 0 && onPlatform) {
+            current_sprite = "GREG_RUN_RIGHT2";
+        }
+        else if(velocity.x < 0 && onPlatform) {
+            current_sprite = "GREG_RUN_LEFT1";
+        }
+        else if(velocity.x == 0 && onPlatform) {
+            current_sprite = "GREG_IDLE";
+        }
+    }
+    else if(current_sprite == "GREG_RUN_RIGHT2") {
+        if(velocity.x > 0 && onPlatform) {
+            current_sprite = "GREG_RUN_RIGHT1";
+        }
+        else if(velocity.x < 0 && onPlatform) {
+            current_sprite = "GREG_RUN_LEFT1";
+        }
+        else if(velocity.x == 0 && onPlatform) {
+            current_sprite = "GREG_IDLE";
+        }
+    }
+    else if(current_sprite == "GREG_RUN_LEFT1") {
+        if(velocity.x > 0 && onPlatform) {
+            current_sprite = "GREG_RUN_RIGHT1";
+        }
+        else if(velocity.x < 0 && onPlatform) {
+            current_sprite = "GREG_RUN_LEFT2";
+        }
+        else if(velocity.x == 0 && onPlatform) {
+            current_sprite = "GREG_IDLE";
+        }
+    }
+    else if(current_sprite == "GREG_RUN_LEFT2") {
+        if(velocity.x > 0 && onPlatform) {
+            current_sprite = "GREG_RUN_RIGHT1";
+        }
+        else if(velocity.x < 0 && onPlatform) {
+            current_sprite = "GREG_RUN_LEFT1";
+        }
+        else if(velocity.x == 0 && onPlatform) {
+            current_sprite = "GREG_IDLE";
+        }
+    }
 }
 
 
